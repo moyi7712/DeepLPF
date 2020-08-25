@@ -1,0 +1,11 @@
+Dataset:
+  filelist: 'filelist.json'
+  origin_path: '/Users/haiya/photoPro/origin'
+  label_path: '/Users/haiya/photoPro/C'
+  image_extension: 'tif'
+  is_flip: True
+  is_rot: True
+  is_resize: True
+  longest_pixs: 512
+  resize_pad_method: ['constant', 'reflect']
+  resize_method: 'INTER_CUBIC'
