@@ -7,5 +7,7 @@ Dataset:
   is_rot: True
   is_resize: True
   longest_pixs: 512
+  shuffle: 12
+  prefetch: 12
   resize_pad_method: ['constant', 'reflect']
   resize_method: 'INTER_CUBIC'

@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 import json, os
 import cv2
-from Utils import resize_method
 
 
 class Data(object):
@@ -21,7 +20,7 @@ class Data(object):
         dataset = dataset.map(lambda path: tf.numpy_function(self.np_read, [path], [tf.float32, tf.float32]), num_parallel_calls=6)
         dataset = dataset.map(self.enhance, num_parallel_calls=6)
         dataset = dataset.batch(batch_size=self.batch_size)
-        # dataset = dataset.shuffle(self.config.shuffle).prefetch(buffer_size=self.config.prefetch)
+        dataset = dataset.shuffle(self.config.shuffle).prefetch(buffer_size=self.config.prefetch)
 
         return dataset
 
