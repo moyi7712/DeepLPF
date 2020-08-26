@@ -3,6 +3,9 @@ Dataset:
   origin_path: '/Users/haiya/photoPro/origin'
   label_path: '/Users/haiya/photoPro/C'
   image_extension: 'tif'
+
+  train_batch_size: 10
+  valid_batch_size: 10
   is_flip: True
   is_rot: True
   is_resize: True
@@ -11,3 +14,8 @@ Dataset:
   prefetch: 12
   resize_pad_method: ['constant', 'reflect']
   resize_method: 'INTER_CUBIC'
+HyperPara:
+  epoch: 20
+  checkpoint_prefix: 'checkpoints'
+  ms: 0.001
+  l1: 1

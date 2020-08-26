@@ -13,7 +13,7 @@ class Padding(keras.layers.Layer):
     def __init__(self, size=1, mode=PaddingMode.zeros):
         super(Padding, self).__init__()
         self.size = size
-        self.mode = mode
+        self.mode = mode.value
 
     def call(self, inputs, **kwargs):
         outputs = tf.pad(inputs,
@@ -53,11 +53,11 @@ class Conv(keras.layers.Layer):
 
 
 class LocalConv(Conv):
-    def __init__(self, channels, name, activation='leaky_relu',is_pooling=True, padding_mode=PaddingMode.reflect):
-        super(LocalConv).__init__(channels, name,
-                                  activation=activation,
-                                  is_pooling=is_pooling,
-                                  padding_mode=padding_mode)
+    def __init__(self, channels, name, activation='leaky_relu', is_pooling=True, padding_mode=PaddingMode.reflect):
+        super(LocalConv, self).__init__(channels=channels, name=name,
+                                        activation=activation,
+                                        is_pooling=is_pooling,
+                                        padding_mode=padding_mode)
         self.conv_1 = keras.layers.Conv2D(filters=channels,
                                           kernel_size=self.kernel_size,
                                           strides=self.stride,
@@ -67,7 +67,7 @@ class LocalConv(Conv):
 
     def call(self, inputs, **kwargs):
         outputs = self.conv(self.pad(inputs))
-        outputs = self.conv(self.pad(outputs))
+        outputs = self.conv_1(self.pad(outputs))
         if self.is_pooling:
             pooling = self.pool(outputs)
         else:
@@ -81,7 +81,7 @@ class Upsample(keras.layers.Layer):
         self.scale = scale
         self.mode = mode
 
-        self.conv = keras.layers.Conv2D(filters=channels, kernel_size=1, strides=1, name=name+'_Conv')
+        self.conv = keras.layers.Conv2D(filters=channels, kernel_size=1, strides=1, name=name + '_Conv')
 
     def call(self, inputs, **kwargs):
         _, w, h, _ = tf.shape(inputs)

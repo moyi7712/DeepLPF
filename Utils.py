@@ -12,6 +12,7 @@ def tanh01(value):
     return 0.5 * (tf.tanh(value) + 1)
 
 
+
 class Dict(dict):
     __setattr__ = dict.__setitem__
     __getattr__ = dict.__getitem__

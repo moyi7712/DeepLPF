@@ -47,9 +47,9 @@ class CubicFilter(Filters):
         cubic_R_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_R, channel_R ** 2), (1, w, h, 16))
         cubic_G_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_G, channel_G ** 2), (1, w, h, 16))
         cubic_B_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_B, channel_B ** 2), (1, w, h, 16))
-        cubic_R_2 = axis_mul * R / channel_R
-        cubic_G_2 = axis_mul * G / channel_G
-        cubic_B_2 = axis_mul * B / channel_B
+        cubic_R_2 = axis_mul * R / (channel_R+1e-8)
+        cubic_G_2 = axis_mul * G / (channel_G+1e-8)
+        cubic_B_2 = axis_mul * B / (channel_B+1e-8)
         cubic_R = tf.concat(values=[cubic_R_1, cubic_R_2], axis=3)
         cubic_G = tf.concat(values=[cubic_G_1, cubic_G_2], axis=3)
         cubic_B = tf.concat(values=[cubic_B_1, cubic_B_2], axis=3)
