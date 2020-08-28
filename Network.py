@@ -17,6 +17,7 @@ class Net(object):
         if self.ckpt_manager.latest_checkpoint:
             checkpoint.restore(self.ckpt_manager.latest_checkpoint)
 
+    # @staticmethod
     def rgb2Lab(self, image):
         image = tf.where(image > 0.04045, ((image + 0.055) / 1.055) ** 2.4, image / 12.92)
         X = image[:, :, :, 0] * 0.412453 + image[:, :, :, 1] * 0.357580 + image[:, :, :, 2] * 0.180423
@@ -29,8 +30,10 @@ class Net(object):
         f = lambda value: tf.where(value > eps ** 3, value ** (1 / 3), ((1 / 3) * (1 / eps) ** 2) * value + 4 / 29)
         L = tf.expand_dims(116 * f(Yn) - 16, axis=3)
         a = tf.expand_dims(500 * (f(Xn) - f(Yn)), axis=3)
-        b = tf.expand_dims(200 * (f(Yn) - f(Zn)),axis=3)
-
+        b = tf.expand_dims(200 * (f(Yn) - f(Zn)), axis=3)
+        L = L / 100
+        a = ((a / 110) - 1) / 2
+        b = ((b / 110) - 1) / 2
         Lab = tf.concat(values=[L, a, b], axis=3)
         return Lab
 
@@ -41,7 +44,7 @@ class Net(object):
         L_p, _, _ = tf.split(predict_Lab, 3, axis=3)
         L_l, _, _ = tf.split(label_Lab, 3, axis=3)
         loss_L = tf.reduce_mean(tf.abs(predict_Lab - label_Lab))
-        loss_ms_ssim = tf.image.ssim_multiscale(L_p, L_l, 100.0,
+        loss_ms_ssim = tf.image.ssim_multiscale(L_p, L_l, 1.0,
                                                 filter_size=5, filter_sigma=0.5)
         loss_ms_ssim = tf.reduce_mean(1-loss_ms_ssim)
         loss = self.lamda_l1*loss_L + self.lamda_ms*loss_ms_ssim

@@ -4,8 +4,8 @@ Dataset:
   label_path: '/Users/haiya/photoPro/C'
   image_extension: 'tif'
 
-  train_batch_size: 10
-  valid_batch_size: 10
+  train_batch_size: 2
+  valid_batch_size: 1
   is_flip: True
   is_rot: True
   is_resize: True

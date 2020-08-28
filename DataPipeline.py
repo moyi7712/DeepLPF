@@ -25,7 +25,7 @@ class Data(object):
 
     def valid(self):
         dataset = tf.data.Dataset.from_tensor_slices(self.filelist['valid'])
-        dataset = dataset.map(lambda path: tf.numpy_function(self.read, [path], [tf.float32, tf.float32]), num_parallel_calls=6)
+        dataset = dataset.map(lambda path: tf.numpy_function(self.read_resize, [path], [tf.float32, tf.float32]), num_parallel_calls=6)
         # dataset = dataset.map(self.enhance, num_parallel_calls=6)
         dataset = dataset.batch(batch_size=self.config.valid_batch_size)
         # dataset = dataset.shuffle(self.config.shuffle).prefetch(buffer_size=self.config.prefetch)

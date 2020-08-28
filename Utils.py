@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import tensorflow_addons as tfa
 from enum import Enum
 import yaml
 
@@ -51,3 +52,10 @@ class resize_method(Enum):
     INTER_NEAREST = 0
     INTER_TAB_SIZE = 32
     INTER_TAB_SIZE2 = 1024
+
+
+class PaddingMode(Enum):
+    zeros = 'CONSTANT'
+    reflect = 'REFLECT'
+    symmetric = 'SYMMETRIC'
+

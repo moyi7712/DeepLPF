@@ -27,9 +27,10 @@ for epoch in range(net_config.epoch):
         loss_L_sum += loss_L
         loss_ssim_sum += loss_ssim
         loss_sum += loss
-        index += 1
-        if index % 200 == 0:
+        if index % 20 == 0:
             net.ckpt_manager.save()
+            print("INFO: epoch{}, step:{}, loss:{}".format(epoch, index, loss_sum/(index+1)))
+        index += 1
     loss_ssim_sum /= index
     loss_L_sum /= index
     loss_sum /= index
