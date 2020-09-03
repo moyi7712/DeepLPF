@@ -90,7 +90,7 @@ class CubicFilter(Filters):
             cubic_mask_list.append(tf.concat(values=[mask_R, mask_G, mask_B], axis=3))
         cubic_mask = tf.concat(values=cubic_mask_list, axis=0)
 
-        return cubic_mask
+        return tf.clip_by_value(cubic_mask+img, 0, 1)
 
 
 class GraduatedFilter(Filters):
@@ -245,5 +245,6 @@ class DeepLPF(keras.models.Model):
 
         mask_fuse = tf.clip_by_value(graduated_mask + elliptical_mask, 0, 2)
         img_fuse = tf.clip_by_value(cubic_mask * mask_fuse, 0, 1)
+
         output = tf.clip_by_value(img_fuse + img, 0, 1)
         return output
