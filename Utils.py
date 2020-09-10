@@ -12,11 +12,6 @@ def sign01(value):
 def tanh01(value):
     return 0.5 * (tf.tanh(value) + 1)
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
 class Dict(dict):
     __setattr__ = dict.__setitem__
     __getattr__ = dict.__getitem__
@@ -62,7 +57,6 @@ class PaddingMode(Enum):
     reflect = 'REFLECT'
     symmetric = 'SYMMETRIC'
 
-<<<<<<< HEAD
 
 def rgb2Lab(image):
     image = tf.where(image > 0.04045, ((image + 0.055) / 1.055) ** 2.4, image / 12.92)
@@ -82,5 +76,3 @@ def rgb2Lab(image):
     b = ((b / 110) - 1) / 2
     Lab = tf.concat(values=[L, a, b], axis=3)
     return Lab
-=======
->>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
