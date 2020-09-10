@@ -22,11 +22,7 @@ class Padding(keras.layers.Layer):
 
 class Conv(keras.layers.Layer):
     def __init__(self, channels, name, activation='leaky_relu',
-<<<<<<< HEAD
                  is_pooling=True, padding_mode=PaddingMode.reflect, norm=None):
-=======
-                 is_pooling=True, padding_mode=PaddingMode.zeros, norm='in'):
->>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
         super(Conv, self).__init__(channels, name)
         self.stride = 1
         self.bias = True
@@ -63,11 +59,7 @@ class Conv(keras.layers.Layer):
 
 class LocalConv(Conv):
     def __init__(self, channels, name, activation='leaky_relu',
-<<<<<<< HEAD
                  is_pooling=True, padding_mode=PaddingMode.reflect, norm=None):
-=======
-                 is_pooling=True, padding_mode=PaddingMode.reflect, norm='in'):
->>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
         super(LocalConv, self).__init__(channels=channels, name=name,
                                         activation=activation,
                                         is_pooling=is_pooling,
