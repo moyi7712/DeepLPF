@@ -35,7 +35,11 @@ class CubicFilter(Filters):
         super(CubicFilter, self).__init__(channels=64, FC_num=60, name='Cubic')
 
     def get_cubic20_mask(self, image, axis_tf):
+<<<<<<< HEAD
         b, w, h, _ = tf.shape(image)
+=======
+        _, w, h, _ = tf.shape(image)
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
 
         R, G, B = tf.split(image, 3, axis=3)
         axis_tf = tf.concat(values=[axis_tf, tf.ones_like(R)], axis=3)
@@ -44,9 +48,15 @@ class CubicFilter(Filters):
         channel_B = tf.concat(values=[axis_tf, B], axis=3)
         axis_mul = tf.expand_dims(axis_tf[:, :, :, 0] * axis_tf[:, :, :, 1], axis=3)
 
+<<<<<<< HEAD
         cubic_R_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_R, channel_R ** 2), (b, w, h, 16))
         cubic_G_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_G, channel_G ** 2), (b, w, h, 16))
         cubic_B_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_B, channel_B ** 2), (b, w, h, 16))
+=======
+        cubic_R_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_R, channel_R ** 2), (1, w, h, 16))
+        cubic_G_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_G, channel_G ** 2), (1, w, h, 16))
+        cubic_B_1 = tf.reshape(tf.einsum('ijkl,ijkn->ijkln', channel_B, channel_B ** 2), (1, w, h, 16))
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
         cubic_R_2 = axis_mul * R / (channel_R + 1e-8)
         cubic_G_2 = axis_mul * G / (channel_G + 1e-8)
         cubic_B_2 = axis_mul * B / (channel_B + 1e-8)
@@ -58,8 +68,11 @@ class CubicFilter(Filters):
     def call(self, inputs, training=None, mask=None):
         feat, img = inputs
         b, w, h, _ = tf.shape(img)
+<<<<<<< HEAD
         axis_tf = self.get_axis(w, h)
         axis_tf = tf.repeat(axis_tf, repeats=b, axis=0)
+=======
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
 
         feat_cubic = tf.concat(values=[feat, img], axis=3)
 
@@ -75,6 +88,7 @@ class CubicFilter(Filters):
         x = self.dropout(x)
         factor = self.fc(x)
         factor = tf.squeeze(factor)
+<<<<<<< HEAD
         factor = tf.reshape(factor, (b, 1, 1, self.factor_num))
 
         # operator
@@ -86,6 +100,24 @@ class CubicFilter(Filters):
         mask_G = tf.expand_dims(tf.reduce_mean(cubic_G*kernel_G, axis=3), axis=3)
         mask_B = tf.expand_dims(tf.reduce_mean(cubic_B*kernel_B, axis=3), axis=3)
         cubic_mask = tf.concat(values=[mask_R, mask_G, mask_B], axis=3)
+=======
+        factor = tf.reshape(factor, (b, 1, self.factor_num, 1))
+
+        # operator
+        kernel_R, kernel_G, kernel_B = tf.split(factor, 3, axis=2)
+        axis_tf = self.get_axis(w, h)
+        cubic_mask_list = []
+
+        for i in range(b):
+            cubic_R, cubic_G, cubic_B = self.get_cubic20_mask(img[i:i + 1, :, :, :], axis_tf)
+
+            mask_R = tf.nn.conv2d(cubic_R, kernel_R[i:i + 1, :, :, :], strides=1, padding='VALID')
+            mask_G = tf.nn.conv2d(cubic_G, kernel_G[i:i + 1, :, :, :], strides=1, padding='VALID')
+            mask_B = tf.nn.conv2d(cubic_B, kernel_B[i:i + 1, :, :, :], strides=1, padding='VALID')
+
+            cubic_mask_list.append(tf.concat(values=[mask_R, mask_G, mask_B], axis=3))
+        cubic_mask = tf.concat(values=cubic_mask_list, axis=0)
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
 
         return tf.clip_by_value(cubic_mask+img, 0, 1)
 
@@ -135,7 +167,10 @@ class GraduatedFilter(Filters):
     def call(self, inputs, training=None, mask=None):
         feat, img = inputs
         b, w, h, _ = tf.shape(img)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
         axis_tf = self.get_axis(w, h)
         axis_tf = tf.repeat(axis_tf, b, axis=0)
         feat_graduated = tf.concat(values=[feat, img], axis=3)
@@ -234,9 +269,14 @@ class DeepLPF(keras.models.Model):
         self.elliptical = EllipticalFilter()
 
     def call(self, inputs, training=None, mask=None):
+<<<<<<< HEAD
         feature = self.backbone(inputs)
         img = feature[:, :, :, :3]
         feat = feature[:, :, :, 3:]
+=======
+        img = inputs
+        feat = self.backbone(img)
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
         cubic_mask = self.cubic(inputs=(feat, img))
 
         graduated_mask = self.graduated(inputs=(feat, img))
@@ -244,5 +284,9 @@ class DeepLPF(keras.models.Model):
 
         mask_fuse = tf.clip_by_value(graduated_mask + elliptical_mask, 0, 2)
         img_fuse = tf.clip_by_value(cubic_mask * mask_fuse, 0, 1)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 07fa757d3e4ef5bce28a0cc2cb361290bef14222
         output = tf.clip_by_value(img_fuse + img, 0, 1)
         return output
